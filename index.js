@@ -1,10 +1,15 @@
 const tmi = require("tmi.js");
+
+// constants we'll need
 const {
 	MASTER_CHANNEL,
 	OWN_CHANNEL,
 	USERNAME,
 	URGHBOT,
 } = require("./constants");
+
+// util functions
+const { constructMessage } = require("./utils");
 
 // environment
 require("dotenv").config();
@@ -62,7 +67,7 @@ const initialOptions = {
 					const opposeMessage =
 						wordToOppose === "I'm connected..."
 							? `Are you sure you're connected? Two sides to every story...`
-							: `Okay, but can we really be certain you dislike ${wordToOppose}?`;
+							: constructMessage(wordToOppose);
 					client.say(channel, opposeMessage);
 				}
 			}

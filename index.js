@@ -1,10 +1,15 @@
 const tmi = require("tmi.js");
+
+// constants we'll need
 const {
 	MASTER_CHANNEL,
 	OWN_CHANNEL,
 	USERNAME,
 	URGHBOT,
 } = require("./constants");
+
+// util functions
+const { constructMessage } = require("./utils");
 
 // environment
 require("dotenv").config();
@@ -28,7 +33,7 @@ const initialOptions = {
 
 (async () => {
 	try {
-		console.log("Welcome.");
+		console.log(`Welcome. Debug status: ${initialOptions.options.debug}`);
 
 		//NB: Make redo if other people want to it
 		const options = { ...initialOptions };
@@ -57,8 +62,12 @@ const initialOptions = {
 				// Only really do anything if the message came from Urghbot
 				if (username === URGHBOT) {
 					// If the message came from Urghbot, find the thing to oppose
-					const wordToOppose = message.split(". ")[1];
-					const opposeMessage = `Okay, but can we really be certain you dislike ${wordToOppose}?`;
+					const wordToOppose = message.split(". ")[1].toLowerCase();
+					// If the message is "I'm connected" from Urghbot
+					const opposeMessage =
+						wordToOppose === "I'm connected..."
+							? `Are you sure you're connected? Two sides to every story...`
+							: constructMessage(wordToOppose);
 					client.say(channel, opposeMessage);
 				}
 			}
